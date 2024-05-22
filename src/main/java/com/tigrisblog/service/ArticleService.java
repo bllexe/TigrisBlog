@@ -14,7 +14,7 @@ public interface ArticleService {
 
   List<ArticleResponse> findAllArticles();
 
- List<CategoryResponse> findArticleByCategory(Long categoryId);
+ List<ArticleResponse> findArticleByCategory(Long categoryId);
 
  List<ArticleResponse> findArticleByAuthor(Long authorId);
 

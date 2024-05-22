@@ -32,6 +32,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     Author author = authorRepository.findById(articleRequest.authorId())
       .orElseThrow(() -> new IllegalArgumentException("Author not found"));
+    //todo create custom exception
 
     List<Category> categories = categoryRepository.findAllById(articleRequest.categoryIds());
 
@@ -52,31 +53,69 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public ArticleResponse findArticleById(Long id) {
-    return null;
+    Article dbArticle = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Article not found"));
+
+      return new ArticleResponse(dbArticle.getId(), dbArticle.getTitle(), dbArticle.getContent(),
+      dbArticle.getCreated_at(), dbArticle.getUpdated_at(),
+      dbArticle.getImageUrl(), dbArticle.getAuthor().getId(),
+      dbArticle.getCategories().stream().map(Category::getId).collect(Collectors.toList()));
   }
 
   @Override
   public List<ArticleResponse> findAllArticles() {
-    return null;
+
+    List<Article> allArticles = articleRepository.findAll();
+    return allArticles.stream()
+      .map(article -> new ArticleResponse(article.getId(), article.getTitle(), article.getContent(),
+        article.getCreated_at(), article.getUpdated_at(),
+        article.getImageUrl(), article.getAuthor().getId(),
+        article.getCategories().stream().map(Category::getId).collect(Collectors.toList())))
+      .collect(Collectors.toList());
   }
 
   @Override
-  public List<CategoryResponse> findArticleByCategory(Long categoryId) {
-    return null;
+  public List<ArticleResponse> findArticleByCategory(Long categoryId) {
+
+    List<Article> allArticles = articleRepository.findArticlesByCategoriesId(categoryId);
+    return allArticles.stream()
+      .map(article -> new ArticleResponse(article.getId(), article.getTitle(), article.getContent(),
+        article.getCreated_at(), article.getUpdated_at(),
+        article.getImageUrl(), article.getAuthor().getId(),
+        article.getCategories().stream().map(Category::getId).collect(Collectors.toList())))
+      .collect(Collectors.toList());
+
   }
 
   @Override
   public List<ArticleResponse> findArticleByAuthor(Long authorId) {
-    return null;
+
+    List<Article> allArticles = articleRepository.findArticlesByAuthorId(authorId);
+    return allArticles.stream()
+      .map(article -> new ArticleResponse(article.getId(), article.getTitle(), article.getContent(),
+        article.getCreated_at(), article.getUpdated_at(),
+        article.getImageUrl(), article.getAuthor().getId(),
+        article.getCategories().stream().map(Category::getId).collect(Collectors.toList())))
+      .collect(Collectors.toList());
   }
 
   @Override
   public void deleteArticleById(Long id) {
+   categoryRepository.deleteById(id);
 
   }
 
   @Override
   public ArticleResponse updateArticleById(Long id, ArticleRequest articleRequest) {
-    return null;
+
+    Article dbArticle = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Article not found"));
+    dbArticle.setTitle(articleRequest.title());
+    dbArticle.setContent(articleRequest.content());
+    dbArticle.setImageUrl(articleRequest.imageUrl());
+    dbArticle.setUpdated_at(LocalDate.now().toString());
+    Article updatedArticle = articleRepository.save(dbArticle);
+    return new ArticleResponse(updatedArticle.getId(), updatedArticle.getTitle(), updatedArticle.getContent(),
+      updatedArticle.getCreated_at(), updatedArticle.getUpdated_at(),
+      updatedArticle.getImageUrl(), updatedArticle.getAuthor().getId(),
+      updatedArticle.getCategories().stream().map(Category::getId).collect(Collectors.toList()));
   }
 }

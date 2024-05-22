@@ -12,4 +12,12 @@ package com.tigrisblog.utils;
   public static final class CategoryCTRL {
     public static final String CTRL = BASE_PATH + "/category";
   }
-}
+
+   public static final class AboutMeCTRL {
+     public static final String CTRL = BASE_PATH + "/aboutMe";
+   }
+   public static final class ContactCTRL {
+     public static final String CTRL = BASE_PATH + "/contactMe";
+   }
+
+ }
