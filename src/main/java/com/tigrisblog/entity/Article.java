@@ -21,7 +21,7 @@ public class Article {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
   @Column(name = "title")
-  private  String title;
+  private String title;
   @Column(columnDefinition = "TEXT")
   @Lob
   private String content;
@@ -31,16 +31,18 @@ public class Article {
   @LastModifiedDate
   @Column(name = "updated_at")
   private String updated_at;
-  @Column(name = "image_url")
-  private String imageUrl;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "author_id")
   private Author author;
   @ManyToMany
   @JoinTable(
-      name = "article_category",
-      joinColumns = @JoinColumn(name = "article_id"),
-      inverseJoinColumns = @JoinColumn(name = "category_id"))
+    name = "article_category",
+    joinColumns = @JoinColumn(name = "article_id"),
+    inverseJoinColumns = @JoinColumn(name = "category_id"))
   private List<Category> categories;
+
+  @OneToOne(mappedBy = "article", cascade = CascadeType.ALL)
+  private Image image;
 
 }
